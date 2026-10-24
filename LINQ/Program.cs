@@ -538,56 +538,245 @@ namespace LINQ
 
 			#region
 
-			// 1. Get all products from the "Seafood" category. Print each product's name and price.
-			//var seafoodProducts = ProductList.Where(p => p.Category == "Seafood");
-			//foreach (var product in seafoodProducts)
-			//{
-			//	Console.WriteLine($"Name: {product.ProductName}, Price: {product.UnitPrice}");
-			//}
+			// Assignment 1
 
-			// 2. Get a list of only the product names from ProductList. Print each name.
-			//var productNames = ProductList.Select(p => p.ProductName);
-			//foreach (var name in productNames)
-			//{
-			//	Console.WriteLine(name);
-			//}
+			// --- Question 3 ---
+			// Sort all products by UnitPrice (ascending). Print each product's name and price.
+			var q3Result = ProductList.OrderBy(p => p.UnitPrice);
 
-			// 4. Get all products where UnitPrice is between 10 and 30
-			//var productsInRange = ProductList.Where(p => p.UnitPrice >= 10 && p.UnitPrice <= 30);
-
-			// 5. Get all products that are in stock (UnitsInStock > 0) and belong to the "Condiments" category.
-			//var inStockCondiments = ProductList.Where(p => p.UnitsInStock > 0 && p.Category == "Condiments");
-
-			// 6. Create a new anonymous type with three properties (Name, Price, StockStatus)
-			//var productDetails = ProductList.Select(p => new {
-			//Name = p.ProductName,
-			//Price = p.UnitPrice,
-			//StockStatus = p.UnitsInStock > 0 ? "Available" : "Out of Stock"
-			//});
-			//foreach (var item in productDetails)
-			//{
-			//	Console.WriteLine($"Name: {item.Name}, Price: {item.Price}, Status: {item.StockStatus}");
-			//}
+			Console.WriteLine("=== Question 3 ===");
+			foreach (var product in q3Result)
+			{
+				Console.WriteLine($"Name: {product.ProductName}, Price: {product.UnitPrice}");
+			}
 
 
-			// 7. Print each product's name along with its position (1-based) in the list.
-			//var indexedProducts = ProductList.Select((p, index) => $"{index + 1}. {p.ProductName}");
-			//foreach (var item in indexedProducts)
-			//{
-			//	Console.WriteLine(item);
-			//	}
+			// --- Question 8 ---
+			// Sort ProductList by Category ascending, then within each category, sort by UnitPrice descending.
+			var q8Result = ProductList
+				.OrderBy(p => p.Category)
+				.ThenByDescending(p => p.UnitPrice);
 
-			// 10. Using QUERY SYNTAX with a compound from clause, list all orders placed in 1997 or later showing CustomerID and OrderDate.
-			//var recentOrders = from cust in CustomerList
-			//			   from ord in cust.Orders
-			//		   where ord.OrderDate.Year >= 1997
-			//		   select new { cust.CustomerID, ord.OrderDate };
+			Console.WriteLine("\n=== Question 8 ===");
+			foreach (var product in q8Result)
+			{
+				Console.WriteLine($"Category: {product.Category}, Name: {product.ProductName}, Price: {product.UnitPrice}");
+			}
 
-			// 11. Show position number alongside ProductName
-			//var indexedNames = ProductList.Select((p, index) => new { Index = index + 1, p.ProductName });
+
+			// --- Question 9 ---
+			// Get all products from the "Beverages" category, sorted by UnitsInStock descending. Print name and stock.
+			var q9Result = ProductList
+				.Where(p => p.Category == "Beverages")
+				.OrderByDescending(p => p.UnitsInStock);
+
+			Console.WriteLine("\n=== Question 9 ===");
+			foreach (var product in q9Result)
+			{
+				Console.WriteLine($"Name: {product.ProductName}, Units In Stock: {product.UnitsInStock}");
+			}
+
+
+			// --- Question 12 ---
+			// Sort first by-word length and then by a case-insensitive sort of the words in an array.
+			string[] wordsArr = { "aPPLE", "AbAcUs", "bRaNcH", "BIUeBeRrY", "ClOvEr", "cHeRry" };
+			var q12Result = wordsArr
+				.OrderBy(w => w.Length)
+				.ThenBy(w => w, StringComparer.OrdinalIgnoreCase);
+
+			Console.WriteLine("\n=== Question 12 ===");
+			foreach (var word in q12Result)
+			{
+				Console.WriteLine(word);
+			}
+
+
+			// --- Question 13 ---
+			// Create a list of all digits in the array whose second letter is 'i' that is reversed from the order in the original array.
+			string[] digitsArr = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+			var q13Result = digitsArr
+				.Where(w => w.Length > 1 && w[1] == 'i')
+				.Reverse();
+
+			Console.WriteLine("\n=== Question 13 ===");
+			foreach (var item in q13Result)
+			{
+				Console.WriteLine(item);
+			}
 
 
 			#endregion
+
+
+			#region
+
+			// Assignment 2
+
+			// --- Question 1 ---
+			// Get top 3 most expensive products
+			var q1 = ProductList.OrderByDescending(p => p.UnitPrice).Take(3);
+			Console.WriteLine("=== Q1: Top 3 Most Expensive ===");
+			foreach (var p in q1) Console.WriteLine($"{p.ProductName}: {p.UnitPrice}");
+
+
+			// --- Question 2 ---
+			// show page 2 of products, with page size = 5 (Skip 5, Take 5)
+			var q2 = ProductList.Skip(5).Take(5);
+			Console.WriteLine("\n=== Q2: Page 2 (Size 5) ===");
+			foreach (var p in q2) Console.WriteLine(p.ProductName);
+
+
+			// --- Question 3 ---
+			// Take products from the list as long as Their UnitPrice is less than $25
+			var q3 = ProductList.OrderBy(p => p.UnitPrice).TakeWhile(p => p.UnitPrice < 25);
+			Console.WriteLine("\n=== Q3: TakeWhile UnitPrice < 25 ===");
+			foreach (var p in q3) Console.WriteLine($"{p.ProductName}: {p.UnitPrice}");
+
+
+			// --- Question 4 ---
+			// Check if ALL products in the "Seafood" category are in stock
+			bool q4 = ProductList.Where(p => p.Category == "Seafood").All(p => p.UnitsInStock > 0);
+			Console.WriteLine($"\n=== Q4: All Seafood in stock? {q4} ===");
+
+
+			// --- Question 5 ---
+			// Check if the ID list contains 9
+			int[] ids = { 3, 9, 13, 18 };
+			bool q5 = ids.Contains(9);
+			Console.WriteLine($"\n=== Q5: IDs contains 9? {q5} ===");
+
+
+			// --- Question 6 ---
+			// Group all products by Category and print each group with its product count
+			var q6 = ProductList.GroupBy(p => p.Category);
+			Console.WriteLine("\n=== Q6: Group By Category & Count ===");
+			foreach (var group in q6)
+			{
+				Console.WriteLine($"Category: {group.Key}, Count: {group.Count()}");
+			}
+
+
+			// --- Question 7 ---
+			// Group products by Category and project only product names per group
+			var q7 = ProductList.GroupBy(p => p.Category)
+								.Select(g => new { Category = g.Key, Names = g.Select(p => p.ProductName) });
+			Console.WriteLine("\n=== Q7: Group By Category & Product Names ===");
+			foreach (var item in q7)
+			{
+				Console.WriteLine($"Category: {item.Category} -> {string.Join(", ", item.Names)}");
+			}
+
+
+			// --- Question 8 ---
+			// Find all categories that have MORE THAN 3 products
+			var q8 = ProductList.GroupBy(p => p.Category)
+								.Where(g => g.Count() > 3)
+								.Select(g => g.Key);
+			Console.WriteLine("\n=== Q8: Categories with > 3 products ===");
+			foreach (var cat in q8) Console.WriteLine(cat);
+
+
+			// --- Question 9 ---
+			// Using QUERY SYNTAX, group customers by Country, and for each group select { Country, Count, TotalOrderValue }
+			// (ملاحظة: افترض وجود Orders مرتبطة بالعملاء أو تفاصيل الفاتورة)
+			var q9 = from c in CustomerList
+					 group c by c.Country into g
+					 select new
+					 {
+						 Country = g.Key,
+						 Count = g.Count(),
+						 TotalOrderValue = g.Sum(x => x.Orders.Sum(o => o.Total)) // بناءً على هيكل بيانات الكورس
+					 };
+
+
+			// --- Question 10 ---
+			// Calculate the total number of units in stock across all products
+			var q10 = ProductList.Sum(p => p.UnitsInStock);
+			Console.WriteLine($"\n=== Q10: Total Units in Stock = {q10} ===");
+
+
+			// --- Question 11 ---
+			// Find the CHEAPEST and MOST EXPENSIVE product prices
+			var minPrice = ProductList.Min(p => p.UnitPrice);
+			var maxPrice = ProductList.Max(p => p.UnitPrice);
+			Console.WriteLine($"\n=== Q11: Cheapest = {minPrice}, Most Expensive = {maxPrice} ===");
+
+
+			// --- Question 12 ---
+			// Get a distinct list of all product categories
+			var q12 = ProductList.Select(p => p.Category).Distinct();
+			Console.WriteLine("\n=== Q12: Distinct Categories ===");
+			foreach (var cat in q12) Console.WriteLine(cat);
+
+
+			// --- Question 13 ---
+			// find product IDs that are in setA but NOT in setB
+			int[] setA = { 1, 3, 5, 7, 9, 11, 13 };
+			int[] setB = { 3, 6, 9, 12, 15, 13 };
+			var q13 = setA.Except(setB);
+			Console.WriteLine("\n=== Q13: SetA Except SetB ===");
+			Console.WriteLine(string.Join(", ", q13));
+
+
+			// --- Question 14 ---
+			// Find countries that appear in list1 but NOT in list2 (case-insensitive)
+			string[] list1 = { "Germany", "France", "UK", "Spain" };
+			string[] list2 = { "france", "SPAIN", "Italy" };
+			var q14 = list1.Except(list2, StringComparer.OrdinalIgnoreCase);
+			Console.WriteLine("\n=== Q14: List1 Except List2 (Case-Insensitive) ===");
+			Console.WriteLine(string.Join(", ", q14));
+
+
+			// --- Question 15 ---
+			// Build a Dictionary<int, Product> keyed by ProductID. Then retrieve and print the product with ID=18.
+			var dict = ProductList.ToDictionary(p => p.ProductID);
+			if (dict.ContainsKey(18))
+			{
+				Console.WriteLine($"\n=== Q15: Product ID 18 Name = {dict[18].ProductName} ===");
+			}
+
+
+			// --- Question 16 ---
+			// Get the first product whose price is greater than $50
+			var q16 = ProductList.First(p => p.UnitPrice > 50);
+			Console.WriteLine($"\n=== Q16: First > $50 = {q16.ProductName} ({q16.UnitPrice}) ===");
+
+
+			// --- Question 17 ---
+			// Try to get the first product with a price > $500. it returns null instead of throwing.
+			var q17 = ProductList.FirstOrDefault(p => p.UnitPrice > 500);
+			Console.WriteLine($"\n=== Q17: FirstOrDefault > $500 is null? {q17 == null} ===");
+
+
+			// --- Question 18 ---
+			// Generate a multiplication table row for 7 (1 to 10)
+			var q18 = Enumerable.Range(1, 10).Select(i => i * 7);
+			Console.WriteLine("\n=== Q18: Multiplication Table for 7 ===");
+			Console.WriteLine(string.Join(", ", q18));
+
+
+			// --- Question 19 ---
+			// Generate even numbers between 1 and 30
+			var q19 = Enumerable.Range(1, 30).Where(i => i % 2 == 0);
+			Console.WriteLine("\n=== Q19: Even numbers 1 to 30 ===");
+			Console.WriteLine(string.Join(", ", q19));
+
+
+			// --- Question 20 ---
+			// Concatenate the first 3 product names with the first 3 customer company names into a single sequence
+			var q20 = ProductList.Take(3).Select(p => p.ProductName)
+						.Concat(CustomerList.Take(3).Select(c => c.CompanyName));
+			Console.WriteLine("\n=== Q20: Concat First 3 Products & Customers ===");
+			foreach (var item in q20) Console.WriteLine(item);
+
+
+			// --- Question 21 ---
+			// Pair each product with a customer (by position) and produce a string "ProductName sold to CompanyName"
+			var q21 = ProductList.Zip(CustomerList, (p, c) => $"{p.ProductName} sold to {c.CompanyName}");
+			Console.WriteLine("\n=== Q21: Zip Products & Customers ===");
+			foreach (var item in q21) Console.WriteLine(item);
+			#endregion
+
 		}
 	}
 }
